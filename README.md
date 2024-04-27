@@ -1,10 +1,5 @@
 <h3 align='center'>Classify Song Genres from Audio Data<br>Rock or rap?</h3><hr>
 
-![Forks](https://img.shields.io/github/forks/shukkkur/Classify-Song-Genres-from-Audio-Data.svg)
-![Stars](https://img.shields.io/github/stars/shukkkur/Classify-Song-Genres-from-Audio-Data.svg)
-![Watchers](https://img.shields.io/github/watchers/shukkkur/Classify-Song-Genres-from-Audio-Data.svg)
-![Last Commit](https://img.shields.io/github/last-commit/shukkkur/Classify-Song-Genres-from-Audio-Data.svg) 
-
 <!-- <p align='center'>
   <img width=500 height=300 src='https://i.ytimg.com/vi/oPgWYj2smCw/maxresdefault.jpg'>
 </p> -->
@@ -24,22 +19,22 @@ echo_tracks = pd.merge(echonest_metrics, tracks[['track_id' , 'genre_top']], how
 # Inspect the resultant dataframe
 echo_tracks.info()
 ```
+
 |   Int64Index: 4802 entries, 0 to 4801   |                       |
-|:---------------------------------------:|:---------------------:|
-|     Data columns (total 10 columns):    |                       |
-|               acousticness              | 4802 non-null float64 |
-|               danceability              | 4802 non-null float64 |
-|                  energy                 | 4802 non-null float64 |
-|             instrumentalness            | 4802 non-null float64 |
-|                 liveness                | 4802 non-null float64 |
+| :-------------------------------------: | :-------------------: |
+|    Data columns (total 10 columns):     |                       |
+|              acousticness               | 4802 non-null float64 |
+|              danceability               | 4802 non-null float64 |
+|                 energy                  | 4802 non-null float64 |
+|            instrumentalness             | 4802 non-null float64 |
+|                liveness                 | 4802 non-null float64 |
 |               speechiness               | 4802 non-null float64 |
 |                  tempo                  | 4802 non-null float64 |
-|                 track_id                | 4802 non-null int64   |
+|                track_id                 |  4802 non-null int64  |
 |                 valence                 | 4802 non-null float64 |
 |                genre_top                | 4802 non-null object  |
 | dtypes: float64(8), int64(1), object(1) |                       |
 |         memory usage: 412.7+ KB         |                       |
-
 
 <h3>2. Pairwise relationships between continuous variables</h3>
 <p>We want to avoid using variables that have strong correlations with each other -- hence avoiding feature redundancy<br>To get a sense of whether there are any strongly correlated features in our data, we will use built-in functions in the <code>pandas</code> package <code>.corr()</code>. </p>
@@ -48,6 +43,7 @@ echo_tracks.info()
 corr_metrics = echo_tracks.corr()
 corr_metrics.style.background_gradient()
 ```
+
 <p align='center'>
   <img src='datasets/corr.jpg'>
 </p>
@@ -67,7 +63,7 @@ scaled_train_features = scaler.fit_transform(features)
 
 <h3>4. Principal Component Analysis on our scaled data</h3>
 <p>Now PCA is ready to determine by how much we can reduce the dimensionality of our data. We can use <b>scree-plots</b> and <b>cumulative explained ratio plots</b> to find the number of components to use in further analyses.<br>When using scree plots, an 'elbow' (a steep drop from one data point to the next) in the plot is typically used to decide on an appropriate cutoff.</p>
-  
+
 ```python
 from sklearn.decomposition import PCA
 
@@ -101,9 +97,8 @@ pca = PCA(n_components, random_state=10)
 pca.fit(scaled_train_features)
 pca_projection = pca.transform(scaled_train_features)
 ```
+
 <img src='datasets/linePCA.jpg'>
-
-
 
 <h3>6. Train a decision tree to classify genre</h3>
 <p>Now we can use the lower dimensional PCA projection of the data to classify songs into genres. we will be using a simple algorithm known as a <b>decision tree</b>.</p>
@@ -138,20 +133,19 @@ print("Decision Tree: \n", class_rep_tree)
 print("Logistic Regression: \n", class_rep_log)
 ```
 
-| Decision Tree: |        |          |         |      |  
-|----------------|--------|----------|---------|------|
+| Decision Tree: |        |          |         |      |
+| -------------- | ------ | -------- | ------- | ---- |
 | precision      | recall | f1-score | support |      |
 | Hip-Hop        | 0.66   | 0.66     | 0.66    | 229  |
 | Rock           | 0.92   | 0.92     | 0.92    | 972  |
 | avg / total    | 0.87   | 0.87     | 0.87    | 1201 |
 
 | Logistic Regression: |        |          |         |      |
-|----------------------|--------|----------|---------|------|
+| -------------------- | ------ | -------- | ------- | ---- |
 | precision            | recall | f1-score | support |      |
 | Hip-Hop              | 0.75   | 0.57     | 0.65    | 229  |
 | Rock                 | 0.90   | 0.95     | 0.93    | 972  |
-| avg / total          | 0.87   | 0.88     | 0.87    | 1201 | 
-
+| avg / total          | 0.87   | 0.88     | 0.87    | 1201 |
 
 <h3>8. Using cross-validation to evaluate our models</h3>
 <p>To get a good sense of how well our models are actually performing, we can apply what's called <b>cross-validation</b> (CV).
